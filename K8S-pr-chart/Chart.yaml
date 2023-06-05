@@ -1,4 +1,4 @@
 apiVersion: v2
-name: my-chart
+name: k8s-chart
 version: 0.1.0
 description: My Helm chart for deploying my application
