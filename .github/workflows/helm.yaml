@@ -39,9 +39,6 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY_PROJ }}
           token_format: "access_token"
 
-      - name: Create Google Cloud Storage bucket
-        run: gsutil mb gs://$GAR_LOCATION-docker.pkg.dev
-
       - name: Configure Docker credentials
         run: |
           gcloud auth configure-docker --quiet
@@ -49,3 +46,9 @@ jobs:
       - name: Push Helm Chart to GAR
         run: |
           gsutil cp charts/*.tgz gs://$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION.tgz
+
+      - name: Install trivy
+        run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Scan Helm Chart Manifests
+        run: trivy --quiet --exit-code 0 --severity HIGH,CRITICAL --no-progress charts/*.tgz
