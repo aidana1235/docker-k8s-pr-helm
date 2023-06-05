@@ -25,7 +25,7 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v1
         with:
-          version: "v3.6.3"
+          version: "v3.7.0"
 
       - name: Lint Helm Chart
         run: helm lint $CHART_NAME
@@ -50,8 +50,11 @@ jobs:
           docker tag $IMAGE:${{ github.sha }} $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ github.sha }}
           docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ github.sha }}
 
-      - name: Install trivy
-        run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - name: Install Trivy
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.19.2/trivy_0.19.2_Linux-64bit.tar.gz
+          tar zxvf trivy_0.19.2_Linux-64bit.tar.gz
+          sudo mv trivy /usr/local/bin/
 
       - name: Scan Helm Chart Manifests
         run: trivy --quiet --exit-code 0 --severity HIGH,CRITICAL --no-progress charts/*.tgz
