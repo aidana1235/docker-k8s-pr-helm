@@ -8,7 +8,7 @@ on:
 env:
   PROJECT_ID: charming-study-382702
   GAR_LOCATION: us-central1
-  REPOSITORY: for-hello-chart
+  REPOSITORY: for-hello-docker
   IMAGE: proj-image
   CHART_NAME: K8S-HELM
   CHART_VERSION: 0.1.0
