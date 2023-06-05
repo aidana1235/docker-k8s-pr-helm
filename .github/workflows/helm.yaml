@@ -10,6 +10,8 @@ env:
   GAR_LOCATION: us-central1
   REPOSITORY: for-hello-chart
   IMAGE: proj-image
+  CHART_NAME: k8s-chart
+  CHART_VERSION: 0.1.0
 
 jobs:
   build-and-push:
@@ -45,5 +47,5 @@ jobs:
 
       - name: Push Docker image to GAR
         run: |
-          docker tag $IMAGE:${GITHUB_SHA} $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${GITHUB_SHA}
-          docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${GITHUB_SHA}
+          docker tag $IMAGE:${{ github.sha }} $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ github.sha }}
+          docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ github.sha }}
