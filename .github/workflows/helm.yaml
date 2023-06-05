@@ -1,4 +1,4 @@
-name: Lint, Package, and Push Helm Chart to GAR
+name: Lint, Package, and Push Helm Chart
 
 on:
   push:
