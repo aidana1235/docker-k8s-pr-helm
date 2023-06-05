@@ -16,8 +16,7 @@ spec:
         app: {{ .Release.Name }}-deploy
     spec:
       containers:
-        - name:  {{ .Release.Name }}-web
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ .Release.Name }}-web
+          image: {{ .Values.image.repository }}
           ports:
             - containerPort: 80

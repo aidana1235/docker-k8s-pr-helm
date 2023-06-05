@@ -10,7 +10,7 @@ env:
   GAR_LOCATION: us-central1
   REPOSITORY: for-hello-chart
   IMAGE: proj-image
-  CHART_NAME: k8s-chart
+  CHART_NAME: k8s-project
   CHART_VERSION: 0.1.0
 
 jobs:
