@@ -45,7 +45,6 @@ jobs:
 
       - name: Push Docker image to GAR
         run: |
-          docker tag $IMAGE $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE
           docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE
 
       - name: Install trivy
