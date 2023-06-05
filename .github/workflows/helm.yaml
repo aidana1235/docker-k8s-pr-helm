@@ -8,10 +8,8 @@ on:
 env:
   PROJECT_ID: charming-study-382702
   GAR_LOCATION: us-central1
-  REPOSITORY: for-hello-docker
+  REPOSITORY: for-hello-chart
   IMAGE: proj-image
-  CHART_NAME: K8S-HELM
-  CHART_VERSION: 0.1.0
 
 jobs:
   build-and-push:
@@ -43,11 +41,22 @@ jobs:
         run: |
           gcloud auth configure-docker --quiet
 
-      - name: Push Docker image to GAR
+      - name: Build Docker image
         run: |
-          docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE
+          docker build --tag $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA .
 
-      - name: Install trivy
+      - name: Authenticate to Docker registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.GAR_LOCATION }}-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ secrets.GCP_TOKEN }}
+
+      - name: Push Docker image
+        run: |
+          docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA
+
+      - name: Install Trivy
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Scan Helm Chart Manifests
