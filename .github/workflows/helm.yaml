@@ -39,6 +39,9 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY_PROJ }}
           token_format: "access_token"
 
+      - name: Create Google Cloud Storage bucket
+        run: gsutil mb gs://$GAR_LOCATION-docker.pkg.dev
+
       - name: Configure Docker credentials
         run: |
           gcloud auth configure-docker --quiet
