@@ -1,0 +1,5 @@
+replicaCount: 1
+image:
+  repository: proj-image
+  tag: latest
+  pullPolicy: IfNotPresent
