@@ -30,7 +30,7 @@ jobs:
         run: helm lint
 
       - name: Package Helm Chart
-        run: helm package K8S-HELM --version $CHART_VERSION --destination .
+        run: helm package $CHART_NAME --version $CHART_VERSION --destination .
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v0.6.0
@@ -42,7 +42,7 @@ jobs:
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
           helm version 
-          helm push --debug K8S-HELM-$CHART_VERSION.tgz oci://us-central1-docker.pkg.dev/charming-study-382702/my-hello-repo
+          helm push --debug $CHART_NAME-$CHART_VERSION.tgz oci://us-central1-docker.pkg.dev/charming-study-382702/my-hello-repo
         env:
           HELM_EXPERIMENTAL_OCI: 1
 
