@@ -9,7 +9,6 @@ env:
   PROJECT_ID: charming-study-382702
   GAR_LOCATION: us-central1
   REPOSITORY: for-hello-docker
-  IMAGE: proj-image
   CHART_NAME: K8S-HELM
   CHART_VERSION: 0.1.0
 
@@ -45,8 +44,8 @@ jobs:
 
       - name: Push Helm Chart to GAR
         run: |
-          gcloud artifacts repositories create $GAR_LOCATION-docker --repository-format=docker --location= --description="Helm chart repository"
-          gcloud artifacts docker images import charts/*.tgz gcr.io/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION
+          gsutil mb -l $GAR_LOCATION gs://$GAR_LOCATION-docker.pkg.dev
+          gsutil cp charts/*.tgz gs://$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION.tgz
 
       - name: Install trivy
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
