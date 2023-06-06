@@ -40,18 +40,11 @@ jobs:
 
       - name: Push Helm Chart to GAR
         run: |
-          # Set up the artifact-registry CLI tool
-          curl -sL "https://dl.google.com/artifact-registry/cli/install.sh" | bash
-          sudo mv ~/.google/artifact-registry/bin/areg /usr/local/bin
-
-          # Push the Helm chart to GAR
-          areg upload \
-            --project-id $PROJECT_ID \
-            --location-id $GAR_LOCATION \
-            --repository-id $REPOSITORY \
-            --artifact-id "$CHART_NAME-$CHART_VERSION.tgz" \
-            --artifact-format "DOCKER" \
-            --source "charts/$CHART_NAME-$CHART_VERSION.tgz"
+          gcloud auth configure-docker --quiet
+          gcloud artifacts docker images tag $CHART_NAME:$CHART_VERSION \
+            us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME:$CHART_VERSION
+          gcloud artifacts docker images push \
+            us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME:$CHART_VERSION
 
       - name: Install trivy
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
