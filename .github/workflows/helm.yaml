@@ -27,7 +27,7 @@ jobs:
           version: "v3.8.1"
 
       - name: Lint Helm Chart
-        run: helm lint k8s-helm
+        run: helm lint K8S-HELM
 
       - name: Package Helm Chart
         run: helm package $CHART_NAME --version $CHART_VERSION --destination .
@@ -42,7 +42,7 @@ jobs:
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
           helm version 
-          helm push $CHART_NAME-$CHART_VERSION.tgz oci://us-central1-docker.pkg.dev/charming-study-382702/my-hello-repo
+          helm push --debug $CHART_NAME-$CHART_VERSION.tgz oci://us-central1-docker.pkg.dev/charming-study-382702/my-hello-repo
         env:
           HELM_EXPERIMENTAL_OCI: 1
 
