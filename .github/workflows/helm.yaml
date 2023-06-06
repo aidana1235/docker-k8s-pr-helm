@@ -45,14 +45,8 @@ jobs:
 
       - name: Push Helm Chart to GAR
         run: |
-          gsutil mb -l $GAR_LOCATION gs://$GAR_LOCATION-docker.pkg.dev
-          gsutil cp charts/*.tgz gs://$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION.tgz
-        env:
-          GAR_LOCATION: ${{ env.GAR_LOCATION }}
-          PROJECT_ID: ${{ env.PROJECT_ID }}
-          REPOSITORY: ${{ env.REPOSITORY }}
-          CHART_NAME: ${{ env.CHART_NAME }}
-          CHART_VERSION: ${{ env.CHART_VERSION }}
+          gcloud artifacts repositories create $GAR_LOCATION-docker --repository-format=docker --location=$GAR_LOCATION --description="Helm chart repository"
+          gcloud artifacts docker images import charts/*.tgz gcr.io/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION
 
       - name: Install trivy
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
