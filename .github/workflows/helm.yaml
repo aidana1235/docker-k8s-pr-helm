@@ -1,4 +1,4 @@
-name: Lint, Package, and Push Helm Chart
+name: Push Helm Chart to GAR
 
 on:
   push:
@@ -13,8 +13,8 @@ env:
   CHART_VERSION: 0.1.0
 
 jobs:
-  build-and-push:
-    name: Lint, Package, and Push Helm Chart
+  push-chart:
+    name: Push Helm Chart to GAR
     runs-on: ubuntu-latest
 
     steps:
@@ -38,14 +38,20 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY_PROJ }}
           token_format: "access_token"
 
-      - name: Configure Docker credentials
-        run: |
-          gcloud auth configure-docker --quiet
-
       - name: Push Helm Chart to GAR
         run: |
-          gsutil mb -l $GAR_LOCATION gs://$GAR_LOCATION-docker.pkg.dev
-          gsutil cp charts/*.tgz gs://$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION.tgz
+          # Set up the artifact-registry CLI tool
+          curl -sL "https://dl.google.com/artifact-registry/cli/install.sh" | bash
+          sudo mv ~/.google/artifact-registry/bin/areg /usr/local/bin
+
+          # Push the Helm chart to GAR
+          areg upload \
+            --project-id $PROJECT_ID \
+            --location-id $GAR_LOCATION \
+            --repository-id $REPOSITORY \
+            --artifact-id "$CHART_NAME-$CHART_VERSION.tgz" \
+            --artifact-format "DOCKER" \
+            --source "charts/$CHART_NAME-$CHART_VERSION.tgz"
 
       - name: Install trivy
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
