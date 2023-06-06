@@ -41,7 +41,6 @@ jobs:
       - name: Push Helm Chart to GAR
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-          helm --version 
           helm cm-push $CHART_NAME.tgz oci://$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY
 
       - name: Install trivy
