@@ -43,6 +43,8 @@ jobs:
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
           helm version 
           helm push $CHART_NAME-$CHART_VERSION.tgz oci://us-central1-docker.pkg.dev/charming-study-382702/for-hello-docker
+        env:
+          HELM_EXPERIMENTAL_OCI: 1
 
       - name: Install trivy
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
