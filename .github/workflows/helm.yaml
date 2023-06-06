@@ -45,7 +45,7 @@ jobs:
 
       - name: Push Helm Chart to GAR
         run: |
-          gcloud artifacts repositories create $GAR_LOCATION-docker --repository-format=docker --location=$GAR_LOCATION --description="Helm chart repository"
+          gcloud artifacts repositories create $GAR_LOCATION-docker --repository-format=docker --location=us-central1 --description="Helm chart repository"
           gcloud artifacts docker images import charts/*.tgz gcr.io/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION
 
       - name: Install trivy
