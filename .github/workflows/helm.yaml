@@ -40,10 +40,11 @@ jobs:
 
       - name: Push Helm Chart to GAR
         run: |
-          gcloud auth configure-docker --quiet
-          gcloud artifacts docker images tag $CHART_NAME:$CHART_VERSION \
-            us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME:$CHART_VERSION
-          gcloud artifacts docker images push \
+          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+          gcloud artifacts repositories create $REPOSITORY --repository-format=docker \
+            --location=$GAR_LOCATION --description="Helm chart repository" --project=$PROJECT_ID
+          gcloud artifacts docker images import charts/$CHART_NAME-$CHART_VERSION.tgz \
+            --location=$GAR_LOCATION --project=$PROJECT_ID \
             us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME:$CHART_VERSION
 
       - name: Install trivy
