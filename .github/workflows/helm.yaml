@@ -1,4 +1,4 @@
-name: Lint, Package, and Push Helm Chart
+name: Push Helm Chart to GAR
 
 on:
   push:
@@ -9,13 +9,12 @@ env:
   PROJECT_ID: charming-study-382702
   GAR_LOCATION: us-central1
   REPOSITORY: for-hello-docker
-  IMAGE: proj-image
   CHART_NAME: K8S-HELM
   CHART_VERSION: 0.1.0
 
 jobs:
-  build-and-push:
-    name: Lint, Package, and Push Helm Chart
+  push-chart:
+    name: Push Helm Chart to GAR
     runs-on: ubuntu-latest
 
     steps:
@@ -39,20 +38,14 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY_PROJ }}
           token_format: "access_token"
 
-      - name: Configure Docker credentials
-        run: |
-          gcloud auth configure-docker --quiet
-
       - name: Push Helm Chart to GAR
         run: |
-          gsutil mb -l $GAR_LOCATION gs://$GAR_LOCATION-docker.pkg.dev
-          gsutil cp charts/*.tgz gs://$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME-$CHART_VERSION.tgz
-        env:
-          GAR_LOCATION: ${{ env.GAR_LOCATION }}
-          PROJECT_ID: ${{ env.PROJECT_ID }}
-          REPOSITORY: ${{ env.REPOSITORY }}
-          CHART_NAME: ${{ env.CHART_NAME }}
-          CHART_VERSION: ${{ env.CHART_VERSION }}
+          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+          gcloud artifacts repositories create $REPOSITORY --repository-format=docker \
+            --location=$GAR_LOCATION --description="Helm chart repository" --project=$PROJECT_ID
+          gcloud artifacts docker images import charts/$CHART_NAME-$CHART_VERSION.tgz \
+            --location=$GAR_LOCATION --project=$PROJECT_ID \
+            us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$CHART_NAME:$CHART_VERSION
 
       - name: Install trivy
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
