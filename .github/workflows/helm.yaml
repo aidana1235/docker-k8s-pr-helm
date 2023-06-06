@@ -30,7 +30,7 @@ jobs:
         run: helm lint $CHART_NAME
 
       - name: Package Helm Chart
-        run: helm package $CHART_NAME --version $CHART_VERSION --destination charts/
+        run: helm package $CHART_NAME --version $CHART_VERSION --destination .
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v0.6.0
