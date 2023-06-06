@@ -9,7 +9,7 @@ env:
   PROJECT_ID: charming-study-382702
   GAR_LOCATION: us-central1
   REPOSITORY: my-hello-repo
-  CHART_NAME: K8S-HELM
+  CHART_NAME: k8s-helm
   CHART_VERSION: 0.1.0
 
 jobs:
